@@ -1,0 +1,69 @@
+import React, { useState } from "react";
+import SetupForm from "./components/SetupForm";
+import AmidaGame from "./components/AmidaGame";
+
+function App() {
+  const [config, setConfig] = useState(null);
+
+  return (
+    <div className="p-6">
+      {!config ? (
+        <SetupForm onSubmit={setConfig} />
+      ) : (
+        <AmidaGame config={config} />
+      )}
+    </div>
+  );
+}
+
+export default App;
+function SetupForm({ onSubmit }) {
+  const [numPlayers, setNumPlayers] = useState(4);
+  const [names, setNames] = useState(["", "", "", ""]);
+  const [prizes, setPrizes] = useState(["", "", "", ""]);
+
+  const handleSubmit = () => {
+    onSubmit({ names, prizes });
+  };
+
+  return (
+    <div>
+      <h2>あみだくじ設定</h2>
+      <label>人数: </label>
+      <input type="number" min={2} max={10} value={numPlayers} onChange={e => {
+        const n = Number(e.target.value);
+        setNumPlayers(n);
+        setNames(Array(n).fill(""));
+        setPrizes(Array(n).fill(""));
+      }} />
+
+      <h3>名前を入力</h3>
+      {names.map((_, i) => (
+        <input
+          key={i}
+          value={names[i]}
+          onChange={e => {
+            const copy = [...names];
+            copy[i] = e.target.value;
+            setNames(copy);
+          }}
+        />
+      ))}
+
+      <h3>景品を入力</h3>
+      {prizes.map((_, i) => (
+        <input
+          key={i}
+          value={prizes[i]}
+          onChange={e => {
+            const copy = [...prizes];
+            copy[i] = e.target.value;
+            setPrizes(copy);
+          }}
+        />
+      ))}
+
+      <button onClick={handleSubmit}>あみだ開始</button>
+    </div>
+  );
+}
